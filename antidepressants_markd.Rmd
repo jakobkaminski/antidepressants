@@ -1,30 +1,120 @@
 ---
-title: "antidepressants_suicide"
+title: "Antidepressants and suicidal behaviour?"
 author: "Jakob A. Kaminski"
-date: "5 7 2019"
-output: html_document
+date: "4 7 2019"
+output: github_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## R Markdown
+## Intro
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+Hengartner et al. performed a re-analysis of the FDA database and evaluated newer-generation antidepressants and suicide risk in Randomized Controlled Trials.
+We critically review the literature and reanalyze the re-analysis.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+This is the data. Of note, there is considerable variance between the studies.
 
-```{r cars}
-summary(cars)
+```{r main_analysis,include=T}
+library(readxl)
+for_rma_AD_vs_Placebo <- read_excel("for_rma_AD_vs_Placebo.xlsx")
+for_rma_AD_vs_Placebo
 ```
 
-## Including Plots
+The analysis is run on this data
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r data,include=FALSE}
+suicide <- matrix(c(10076,31744,4,37),ncol=2,byrow=TRUE)
+colnames(suicide) <- c("Placebo","Antidepressant")
+rownames(suicide) <- c("no suicide","suicide")
+suicide<- as.table(suicide)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+Reproducing Hengartner et al. results
+
+```{r epi,include=T}
+library(epitools)
+epitab(suicide,pvalue = "midp.exact",oddsratio = "midp", verbose = T, correction = T)
+```
+
+
+
+First one has to visualize the data.
+
+```{r table,include=T}
+suicide
+```
+## Mosaic plot
+
+
+```{r mosaic, echo=F}
+mosaicplot(suicide,color = "skyblue2",
+           border = "chocolate")
+```
+
+Then we reanalyzed the data using meta analytical approach taking the variance between studies into account peto method http://www.metafor-project.org/doku.php/analyses:yusuf1985
+
+
+```{r meta, echo=F, warning=FALSE}
+library(metafor)
+library(readxl)
+for_rma_AD_vs_Placebo <- read_excel("for_rma_AD_vs_Placebo.xlsx")
+
+#http://www.metafor-project.org/doku.php/analyses:yusuf1985
+res <- rma.peto(ai=ADsuicides, n1i=ADparticipants, ci=PLCsuicides, n2i=PLCparticipants, data=for_rma_AD_vs_Placebo, slab=study)
+
+predict(res, transf=exp, digits=2)
+
+```
+
+
+```{r forest, echo=F, warning=FALSE}
+
+forest(res,xlim=c(-10, 5),at=log(c(0.05, 0.25, 1, 4)), atransf=exp,mlab="",ilab=cbind(for_rma_AD_vs_Placebo$ADsuicides, for_rma_AD_vs_Placebo$ADparticipants, for_rma_AD_vs_Placebo$PLCsuicides, for_rma_AD_vs_Placebo$PLCparticipants),
+       ilab.xpos=c(-6.5,-5.5,-4.5,-3.5),psize=1,cex = 0.9)
+text(-10, 9.5, "Medication (year)",  pos=4, cex = 0.9)
+text(3.2, 9.5, "Odds Ratio (log) [95% CI]", cex = 0.9)
+text(c(-6.5,-5.5,-4.5,-3.5), 9.5, c("suicide", "total", "suicide", "total"))
+text(c(-6,-4),     10, c("Antidepressant", "Placebo"))
+text(-10, -1, pos=4, cex=0.75, bquote(paste("FE Model for all Studies (Q = ",
+                                            .(formatC(res$QE, digits=2, format="f")), ", df = 7",
+                                            ", p = ", .(formatC(res$QEp, digits=2, format="f")), ")")))
+                                            
+```
+
+
+
+
+##suicide
+
+Mantel-Haenszel (MH) Methode. Reccomended for rare events, and anequal group sizes:
+Ref: https://ebmh.bmj.com/content/21/2/72
+
+```{r metafor_suicide, echo=F, warning=FALSE}
+
+library("metafor")
+df=read.csv("suicides_ad.csv") 
+
+res <-rma.mh(df$suic_ad, df$part_ad-df$suic_ad, 
+       df$suic_plc, df$part_plc-df$suic_plc, 
+       df$part_ad, df$part_plc,
+         to="none", drop00=TRUE,
+         level=95, verbose=FALSE, measure="OR", correct = FALSE)
+forest(res)
+```
+
+#suicide attempts
+
+
+```{r metafor_suicideattempts, echo=F, warning=FALSE}
+res <-rma.mh(df$suica_ad, df$part_ad-df$suica_ad, 
+       df$suica_plc, df$part_plc-df$suica_plc, 
+       df$part_ad, df$part_plc,
+       to="only0", drop00=FALSE,
+       level=95, verbose=FALSE, measure="OR", correct = FALSE)
+forest(res)
+
+                                            
+```
+
