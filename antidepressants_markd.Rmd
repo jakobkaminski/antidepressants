@@ -108,7 +108,7 @@ text(3.2, 13.5, "Odds Ratio (log) [95% CI]", cex = 0.9)
 text(c(-6.5,-5.5,-4.5,-3.5), 13.5, c("suicide", "total", "suicide", "total"))
 text(c(-6,-4),     14, c("Antidepressant", "Placebo"))
 text(-10, -1, pos=4, cex=0.75, bquote(paste("FE Model for all Studies (Q = ",
-                                            .(formatC(res$QE, digits=2, format="f")), ", df = 7",
+                                            .(formatC(res$QE, digits=2, format="f")), ", df = 11",
                                             ", p = ", .(formatC(res$QEp, digits=2, format="f")), ")")))
 funnel(res, level=c(90, 95, 99), shade=c("white", "gray55", "gray75"), refline=0, legend=TRUE)
 
