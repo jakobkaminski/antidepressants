@@ -145,7 +145,47 @@ Mantel-Haenszel (MH) Methode. Reccomended for rare events, and anequal group siz
 
 ![](antidepressants_markd_files/figure-markdown_github/metafor_suicide-1.png)
 
+    ## 
+    ## Fixed-Effects Model (k = 14)
+    ## 
+    ## Test for Heterogeneity: 
+    ## Q(df = 2) = 4.1258, p-val = 0.1271
+    ## 
+    ## Model Results (log scale):
+    ## 
+    ## estimate      se    zval    pval    ci.lb   ci.ub 
+    ##   0.6828  0.5211  1.3103  0.1901  -0.3386  1.7042 
+    ## 
+    ## Model Results (OR scale):
+    ## 
+    ## estimate   ci.lb   ci.ub 
+    ##   1.9794  0.7128  5.4968 
+    ## 
+    ## Cochran-Mantel-Haenszel Test:    CMH = 1.8312, df = 1, p-val = 0.1760
+    ## Tarone's Test for Heterogeneity: X^2 = 7.5084, df = 7, p-val = 0.3779
+
 suicide attempts
 ================
 
-![](antidepressants_markd_files/figure-markdown_github/metafor_suicideattempts-1.png)![](antidepressants_markd_files/figure-markdown_github/metafor_suicideattempts-2.png)
+![](antidepressants_markd_files/figure-markdown_github/metafor_suicideattempts-1.png)
+
+    ## 
+    ## Fixed-Effects Model (k = 12)
+    ## 
+    ## Test for Heterogeneity: 
+    ## Q(df = 11) = 6.3883, p-val = 0.8462
+    ## 
+    ## Model Results (log scale):
+    ## 
+    ## estimate      se    zval    pval   ci.lb   ci.ub 
+    ##   0.4901  0.2038  2.4053  0.0162  0.0907  0.8895 
+    ## 
+    ## Model Results (OR scale):
+    ## 
+    ## estimate   ci.lb   ci.ub 
+    ##   1.6325  1.0950  2.4340 
+    ## 
+    ## Cochran-Mantel-Haenszel Test:    CMH =  5.9428, df = 1,  p-val = 0.0148
+    ## Tarone's Test for Heterogeneity: X^2 = 10.4092, df = 11, p-val = 0.4940
+
+![](antidepressants_markd_files/figure-markdown_github/metafor_suicideattempts-2.png)

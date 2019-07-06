@@ -131,7 +131,10 @@ res <-rma.mh(df$suic_ad, df$part_ad-df$suic_ad,
        df$part_ad, df$part_plc,
          to="none", drop00=TRUE,
          level=95, verbose=FALSE, measure="OR", correct = FALSE)
+
 forest(res)
+
+res
 
 ```
 
@@ -145,6 +148,7 @@ res <-rma.mh(df$suica_ad, df$part_ad-df$suica_ad,
        to="only0", drop00=FALSE,
        level=95, verbose=FALSE, measure="OR", correct = FALSE)
 forest(res)
+res
 funnel(res, level=c(90, 95, 99), shade=c("white", "gray55", "gray75"), refline=0, legend=TRUE)
 
 ```
