@@ -109,6 +109,9 @@ Mosaic plot
 
 Then we reanalyzed the data using meta analytical approach taking the variance between studies into account peto method <http://www.metafor-project.org/doku.php/analyses:yusuf1985>
 
+suicide
+=======
+
     ## Loading required package: Matrix
 
     ## Loading 'metafor' package (version 2.1-0). For an overview 
@@ -118,10 +121,16 @@ Then we reanalyzed the data using meta analytical approach taking the variance b
     ##  pred ci.lb ci.ub 
     ##  1.74  0.78  3.90
 
-![](antidepressants_markd_files/figure-markdown_github/forest-1.png)
+![](antidepressants_markd_files/figure-markdown_github/forest-1.png) \#suicide attempts
+
+    ## 
+    ##  pred ci.lb ci.ub 
+    ##  1.53  1.09  2.15
+
+![](antidepressants_markd_files/figure-markdown_github/forest_attempt_plot-1.png)
 
 suicide
--------
+=======
 
 Mantel-Haenszel (MH) Methode. Reccomended for rare events, and anequal group sizes: Ref: <https://ebmh.bmj.com/content/21/2/72>
 

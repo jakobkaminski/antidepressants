@@ -41,10 +41,6 @@ epitab(suicide,pvalue = "midp.exact",oddsratio = "midp", verbose = T, correction
 
 
 First one has to visualize the data.
-
-```{r table,include=T}
-suicide
-```
 ## Mosaic plot
 
 
@@ -55,7 +51,7 @@ mosaicplot(suicide,color = "skyblue2",
 
 Then we reanalyzed the data using meta analytical approach taking the variance between studies into account peto method http://www.metafor-project.org/doku.php/analyses:yusuf1985
 
-
+#suicide
 ```{r meta, echo=F, warning=FALSE}
 library(metafor)
 library(readxl)
@@ -81,12 +77,40 @@ text(-10, -1, pos=4, cex=0.75, bquote(paste("FE Model for all Studies (Q = ",
                                             .(formatC(res$QE, digits=2, format="f")), ", df = 7",
                                             ", p = ", .(formatC(res$QEp, digits=2, format="f")), ")")))
                                             
+
+```
+#suicide attempts
+```{r forest_attempt, echo=F, warning=FALSE}
+
+library(metafor)
+library(readxl)
+for_rma_AD_vs_Placebo <- read_excel("for_rma_AD_vs_Placebo_suicideattempts.xlsx")
+for_rma_AD_vs_Placebo$ADsuicideattempts<-as.numeric(for_rma_AD_vs_Placebo$ADsuicideattempts)
+for_rma_AD_vs_Placebo$PLCsuicideattempts<-as.numeric(for_rma_AD_vs_Placebo$PLCsuicideattempts)
+
+#http://www.metafor-project.org/doku.php/analyses:yusuf1985
+res <- rma.peto(ai=ADsuicideattempts, n1i=ADparticipants, ci=PLCsuicideattempts, n2i=PLCparticipants, data=for_rma_AD_vs_Placebo, slab=study)
+
+predict(res, transf=exp, digits=2)
+```
+
+```{r forest_attempt_plot, echo=F, warning=FALSE}
+
+forest(res,xlim=c(-10, 5),at=log(c(0.05, 0.25, 1, 4)), atransf=exp,mlab="",ilab=cbind(for_rma_AD_vs_Placebo$ADsuicideattempts, for_rma_AD_vs_Placebo$ADparticipants, for_rma_AD_vs_Placebo$PLCsuicideattempts, for_rma_AD_vs_Placebo$PLCparticipants),
+       ilab.xpos=c(-6.5,-5.5,-4.5,-3.5),psize=1,cex = 0.9)
+text(-10, 13.5, "Medication (year)",  pos=4, cex = 0.9)
+text(3.2, 13.5, "Odds Ratio (log) [95% CI]", cex = 0.9)
+text(c(-6.5,-5.5,-4.5,-3.5), 13.5, c("suicide", "total", "suicide", "total"))
+text(c(-6,-4),     14, c("Antidepressant", "Placebo"))
+text(-10, -1, pos=4, cex=0.75, bquote(paste("FE Model for all Studies (Q = ",
+                                            .(formatC(res$QE, digits=2, format="f")), ", df = 7",
+                                            ", p = ", .(formatC(res$QEp, digits=2, format="f")), ")")))
+
+
 ```
 
 
-
-
-##suicide
+#suicide
 
 Mantel-Haenszel (MH) Methode. Reccomended for rare events, and anequal group sizes:
 Ref: https://ebmh.bmj.com/content/21/2/72
@@ -115,6 +139,5 @@ res <-rma.mh(df$suica_ad, df$part_ad-df$suica_ad,
        level=95, verbose=FALSE, measure="OR", correct = FALSE)
 forest(res)
 
-                                            
 ```
 
