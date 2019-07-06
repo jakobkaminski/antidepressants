@@ -10,12 +10,6 @@ Hengartner et al. performed a re-analysis of the FDA database and evaluated newe
 
 This is the data. Of note, there is considerable variance between the studies.
 
-``` r
-library(readxl)
-for_rma_AD_vs_Placebo <- read_excel("for_rma_AD_vs_Placebo.xlsx")
-for_rma_AD_vs_Placebo
-```
-
     ## # A tibble: 14 x 5
     ##    study              ADsuicides ADparticipants PLCsuicides PLCparticipants
     ##    <chr>                   <dbl>          <dbl>       <dbl>           <dbl>
@@ -34,14 +28,47 @@ for_rma_AD_vs_Placebo
     ## 13 Levomilnacipran (…          0           2655           0            1004
     ## 14 Vortioxetine (201…          0           3060           0            1621
 
-The analysis is run on this data
+The analysis is run on the sum of the above mentioned data:
 
+<table>
+<thead>
+<tr>
+<th style="text-align:left;">
+</th>
+<th style="text-align:right;">
+Placebo
+</th>
+<th style="text-align:right;">
+Antidepressant
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+no suicide
+</td>
+<td style="text-align:right;">
+10076
+</td>
+<td style="text-align:right;">
+31744
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+suicide
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+37
+</td>
+</tr>
+</tbody>
+</table>
 Reproducing Hengartner et al. results
-
-``` r
-library(epitools)
-epitab(suicide,pvalue = "midp.exact",oddsratio = "midp", verbose = T, correction = T)
-```
 
     ## $tab
     ##            Placebo           p0 Antidepressant          p1 oddsratio
@@ -94,14 +121,6 @@ epitab(suicide,pvalue = "midp.exact",oddsratio = "midp", verbose = T, correction
 
 First one has to visualize the data.
 
-``` r
-suicide
-```
-
-    ##            Placebo Antidepressant
-    ## no suicide   10076          31744
-    ## suicide          4             37
-
 Mosaic plot
 -----------
 
@@ -112,22 +131,12 @@ Then we reanalyzed the data using meta analytical approach taking the variance b
 suicide
 =======
 
-    ## Loading required package: Matrix
+![](antidepressants_markd_files/figure-markdown_github/forest-1.png)
 
-    ## Loading 'metafor' package (version 2.1-0). For an overview 
-    ## and introduction to the package please type: help(metafor).
+suicide attempts
+================
 
-    ## 
-    ##  pred ci.lb ci.ub 
-    ##  1.74  0.78  3.90
-
-![](antidepressants_markd_files/figure-markdown_github/forest-1.png) \#suicide attempts
-
-    ## 
-    ##  pred ci.lb ci.ub 
-    ##  1.53  1.09  2.15
-
-![](antidepressants_markd_files/figure-markdown_github/forest_attempt_plot-1.png)
+![](antidepressants_markd_files/figure-markdown_github/forest_attempt_plot-1.png)![](antidepressants_markd_files/figure-markdown_github/forest_attempt_plot-2.png)
 
 suicide
 =======
@@ -139,4 +148,4 @@ Mantel-Haenszel (MH) Methode. Reccomended for rare events, and anequal group siz
 suicide attempts
 ================
 
-![](antidepressants_markd_files/figure-markdown_github/metafor_suicideattempts-1.png)
+![](antidepressants_markd_files/figure-markdown_github/metafor_suicideattempts-1.png)![](antidepressants_markd_files/figure-markdown_github/metafor_suicideattempts-2.png)
