@@ -10,16 +10,25 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Intro
+In 1990  Teicher et al. (1990) reported unexpected suicidal ideation in depressed patients treated with fluoxetine.
+Since then, several studies investigated suicide risk.
+A recent study by Hengartner et al. (2018) performed a re-analysis of the FDA database and evaluated newer-generation antidepressants and suicide risk in Randomized Controlled Trials.
 
-Hengartner et al. performed a re-analysis of the FDA database and evaluated newer-generation antidepressants and suicide risk in Randomized Controlled Trials.
+They refer to Khan et al 2018 who report decreased suicidylity in newer generation antidepressants and no decreased suicidality as compared to placebo.
+
+Khan et al. calculate person person exposure year (PEY).
+
+Hengartner et al. argue that suicides occur in the beginning of treatment so PEY is not the apropriate analysis.
+
 We critically review the literature and reanalyze the re-analysis.
 
-This is the data. Of note, there is considerable variance between the studies.
+This is the data from Hengartner et al. (2018) Of note, there is considerable variance between the studies.
 
 ```{r main_analysis,echo=F,include=T}
 library(readxl)
 for_rma_AD_vs_Placebo <- read_excel("for_rma_AD_vs_Placebo.xlsx")
-for_rma_AD_vs_Placebo
+library(kableExtra)
+kable(for_rma_AD_vs_Placebo)
 ```
 
 The analysis is run on the sum of the above mentioned data:
@@ -110,7 +119,7 @@ text(c(-6,-4),     14, c("Antidepressant", "Placebo"))
 text(-10, -1, pos=4, cex=0.75, bquote(paste("FE Model for all Studies (Q = ",
                                             .(formatC(res$QE, digits=2, format="f")), ", df = 11",
                                             ", p = ", .(formatC(res$QEp, digits=2, format="f")), ")")))
-funnel(res, level=c(90, 95, 99), shade=c("white", "gray55", "gray75"), refline=0, legend=TRUE)
+funnel(res, level=c(90, 95, 99), shade=c("white", "gray55", "gray75"), legend=TRUE)
 
 
 ```
@@ -129,7 +138,7 @@ df=read.csv("suicides_ad.csv")
 res <-rma.mh(df$suic_ad, df$part_ad-df$suic_ad, 
        df$suic_plc, df$part_plc-df$suic_plc, 
        df$part_ad, df$part_plc,
-         to="none", drop00=TRUE,
+         to="only0", add=1/2, drop00=TRUE,
          level=95, verbose=FALSE, measure="OR", correct = FALSE)
 
 forest(res)
@@ -145,11 +154,49 @@ res
 res <-rma.mh(df$suica_ad, df$part_ad-df$suica_ad, 
        df$suica_plc, df$part_plc-df$suica_plc, 
        df$part_ad, df$part_plc,
-       to="only0", drop00=FALSE,
+       to="only0", drop00=FALSE, add=1/2,
        level=95, verbose=FALSE, measure="OR", correct = FALSE)
 forest(res)
 res
-funnel(res, level=c(90, 95, 99), shade=c("white", "gray55", "gray75"), refline=0, legend=TRUE)
+funnel(res, level=c(90, 95, 99), shade=c("white", "gray55", "gray75"), legend=TRUE)
 
 ```
+
+#age effect
+
+In the original of the FDA data Stone et al. describe a strong age effect.
+
+
+#reproducing Khan et al. with patient exposure year (PEY)
+
+```{r metafor_Khan, echo=F, include=T, warning=FALSE}
+Khanetal2018 <- read_excel("Khanetal2018.xlsx", col_types = c("numeric", "text", "numeric",  "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric"))
+library(kableExtra)
+kable(Khanetal2018)
+```
+
+##suicide
+
+```{r metafor_Khan_suicide, echo=F, warning=FALSE}
+
+IRRSuicide<-Khanetal2018 %>%
+escalc(measure="IRR", x1i=ADSuicide, x2i=PlaceboSuicide, t1i = PEYAD, t2i = PEYPLC, to="only0", add = 1/2, data=.,slab = paste(medication, year, sep=", "))
+res<-rma(yi, vi, data=IRRSuicide)
+res
+forest(res)
+```
+
+
+##suicide attempts
+
+
+```{r metafor_Khan_suicideattempts, echo=F, warning=FALSE}
+IRRSuicideattempts<-Khanetal2018 %>%
+  escalc(measure="IRR", x1i=ADSuicideattempt, x2i=PlaceboSuicideattempt, t1i = PEYAD, t2i = PEYPLC, to="only0", add = 1/2, data=.,slab = paste(medication, year, sep=", "))
+res<-rma(yi, vi, data=IRRSuicideattempts)
+res
+forest(res)
+```
+
+
 
