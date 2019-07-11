@@ -626,7 +626,7 @@ suicide
 
 </table>
 
-Reproducing Hengartner et al. results
+## Reproducing Hengartner et al. results
 
     ## $tab
     ##            Placebo           p0 Antidepressant          p1 oddsratio
@@ -687,16 +687,15 @@ Then we reanalyzed the data using meta analytical approach taking the
 variance between studies into account peto method
 <http://www.metafor-project.org/doku.php/analyses:yusuf1985>
 
-\#suicide
+### suicide
 
 ![](antidepressants_markd_files/figure-gfm/forest-1.png)<!-- -->
 
-\#suicide
-attempts
+### suicide attempts
 
 ![](antidepressants_markd_files/figure-gfm/forest_attempt_plot-1.png)<!-- -->![](antidepressants_markd_files/figure-gfm/forest_attempt_plot-2.png)<!-- -->
 
-\#suicide
+### suicide
 
 Mantel-Haenszel (MH) Methode. Reccomended for rare events, and anequal
 group sizes: Ref:
@@ -723,8 +722,7 @@ group sizes: Ref:
     ## Cochran-Mantel-Haenszel Test:    CMH = 1.8312, df = 1, p-val = 0.1760
     ## Tarone's Test for Heterogeneity: X^2 = 7.5084, df = 7, p-val = 0.3779
 
-\#suicide
-attempts
+### suicide attempts
 
 ![](antidepressants_markd_files/figure-gfm/metafor_suicideattempts-1.png)<!-- -->
 
@@ -749,12 +747,52 @@ attempts
 
 ![](antidepressants_markd_files/figure-gfm/metafor_suicideattempts-2.png)<!-- -->
 
-\#age effect
+calculating NNH with
+<https://ebm-tools.knowledgetranslation.net/calculator/converter/>
+
+patient expected event rate of 3.7% according to
+
+<https://www.cdc.gov/mmwr/preview/mmwrhtml/ss6013a1.htm>
+
+NNH=45
+
+Or from risk difference according to
+<https://handbook-5-1.cochrane.org/chapter_12/12_5_4_1_computing_nnt_from_a_risk_difference_rd.htm>
+
+``` r
+res <-rma.mh(df$suica_ad, df$part_ad-df$suica_ad, 
+       df$suica_plc, df$part_plc-df$suica_plc, 
+       df$part_ad, df$part_plc,
+       to="only0", drop00=FALSE, add=1/2,
+       level=95, verbose=FALSE, measure="RD", correct = FALSE)
+res
+```
+
+    ## 
+    ## Fixed-Effects Model (k = 12)
+    ## 
+    ## Test for Heterogeneity: 
+    ## Q(df = 11) = 12.4491, p-val = 0.3309
+    ## 
+    ## Model Results:
+    ## 
+    ## estimate      se    zval    pval   ci.lb   ci.ub 
+    ##   0.0021  0.0007  2.7588  0.0058  0.0006  0.0035
+
+### NNH
+
+``` r
+1/0.0021
+```
+
+    ## [1] 476.1905
+
+### age effect
 
 In the original of the FDA data Stone et al. describe a strong age
 effect.
 
-\#reproducing Khan et al. with patient exposure year (PEY)
+## reanalyzing Khan et al. with patient exposure year (PEY)
 
 <table>
 
@@ -1728,7 +1766,7 @@ Vortioxetine
 
 </table>
 
-\#\#suicide
+### suicide
 
     ## 
     ## Random-Effects Model (k = 12; tau^2 estimator: REML)
@@ -1751,7 +1789,7 @@ Vortioxetine
 
 ![](antidepressants_markd_files/figure-gfm/metafor_Khan_suicide-1.png)<!-- -->
 
-\#\#suicide attempts
+### suicide attempts
 
     ## 
     ## Random-Effects Model (k = 10; tau^2 estimator: REML)
@@ -1773,3 +1811,10 @@ Vortioxetine
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 
 ![](antidepressants_markd_files/figure-gfm/metafor_Khan_suicideattempts-1.png)<!-- -->
+
+Kahn et al. specifically report a reduction of suicide and suicide
+attempts in newer studys. Probably confounded by more rigid exclusion
+criteria of suicidal patients in newer studies.
+
+Problem with PEY: if suicide attemts occur causally after treatment
+initiation than PEY will water down effect.

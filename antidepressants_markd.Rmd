@@ -47,7 +47,7 @@ kable(suicide)
 ```
 
 
-Reproducing Hengartner et al. results
+## Reproducing Hengartner et al. results
 
 ```{r epi,echo=F,include=T}
 library(epitools)
@@ -66,7 +66,7 @@ mosaicplot(suicide,color = "skyblue2",
 
 Then we reanalyzed the data using meta analytical approach taking the variance between studies into account peto method http://www.metafor-project.org/doku.php/analyses:yusuf1985
 
-#suicide
+### suicide
 ```{r meta, echo=F,include=F, warning=FALSE}
 
 library(metafor)
@@ -94,7 +94,7 @@ text(-10, -1, pos=4, cex=0.75, bquote(paste("FE Model for all Studies (Q = ",
 
 ```
 
-#suicide attempts
+### suicide attempts
 
 ```{r forest_attempt, echo=F, warning=FALSE}
 
@@ -125,7 +125,7 @@ funnel(res, level=c(90, 95, 99), shade=c("white", "gray55", "gray75"), legend=TR
 ```
 
 
-#suicide
+### suicide
 
 Mantel-Haenszel (MH) Methode. Reccomended for rare events, and anequal group sizes:
 Ref: https://ebmh.bmj.com/content/21/2/72
@@ -147,7 +147,7 @@ res
 
 ```
 
-#suicide attempts
+### suicide attempts
 
 
 ```{r metafor_suicideattempts, echo=F, warning=FALSE}
@@ -162,12 +162,39 @@ funnel(res, level=c(90, 95, 99), shade=c("white", "gray55", "gray75"), legend=TR
 
 ```
 
-#age effect
+calculating NNH with https://ebm-tools.knowledgetranslation.net/calculator/converter/
+
+patient expected event rate of 3.7% according to
+
+https://www.cdc.gov/mmwr/preview/mmwrhtml/ss6013a1.htm
+
+
+NNH=45
+
+
+Or from risk difference according to https://handbook-5-1.cochrane.org/chapter_12/12_5_4_1_computing_nnt_from_a_risk_difference_rd.htm
+
+```{r,  warning=FALSE}
+res <-rma.mh(df$suica_ad, df$part_ad-df$suica_ad, 
+       df$suica_plc, df$part_plc-df$suica_plc, 
+       df$part_ad, df$part_plc,
+       to="only0", drop00=FALSE, add=1/2,
+       level=95, verbose=FALSE, measure="RD", correct = FALSE)
+res
+```
+
+### NNH
+```{r}
+1/0.0021
+```
+
+
+### age effect
 
 In the original of the FDA data Stone et al. describe a strong age effect.
 
 
-#reproducing Khan et al. with patient exposure year (PEY)
+## reanalyzing Khan et al. with patient exposure year (PEY)
 
 ```{r metafor_Khan, echo=F, include=T, warning=FALSE}
 Khanetal2018 <- read_excel("Khanetal2018.xlsx", col_types = c("numeric", "text", "numeric",  "numeric", "numeric", "numeric", "numeric", "numeric", "numeric", "numeric"))
@@ -175,7 +202,7 @@ library(kableExtra)
 kable(Khanetal2018)
 ```
 
-##suicide
+### suicide
 
 ```{r metafor_Khan_suicide, echo=F, warning=FALSE}
 
@@ -187,8 +214,7 @@ forest(res)
 ```
 
 
-##suicide attempts
-
+### suicide attempts
 
 ```{r metafor_Khan_suicideattempts, echo=F, warning=FALSE}
 IRRSuicideattempts<-Khanetal2018 %>%
@@ -198,5 +224,6 @@ res
 forest(res)
 ```
 
+Kahn et al. specifically report a reduction of suicide and suicide attempts in newer studys. Probably confounded by more rigid exclusion criteria of suicidal patients in newer studies. 
 
-
+Problem with PEY: if suicide attemts occur causally after treatment initiation than PEY will water down effect. 
