@@ -227,3 +227,112 @@ forest(res)
 Kahn et al. specifically report a reduction of suicide and suicide attempts in newer studys. Probably confounded by more rigid exclusion criteria of suicidal patients in newer studies. 
 
 Problem with PEY: if suicide attemts occur causally after treatment initiation than PEY will water down effect. 
+
+###for supplement
+###Data is stored in table "antidepressants_suicideattempt.xls" and "antidepressants_suicide.xls".
+
+
+#R Code adopted from Efthimiou(1) :
+
+
+### Start by installing necessary libraries
+```{r meta packages, echo=F, warning=FALSE}
+# This code chunk  makes sure that all  libraries  are installed, it will not be shown in the report (notice echo = FALSE).
+packages <- c("readxl", "knitr", "tidyr", "meta", "mmeta", "readxl")
+if ( length(missing_pkgs <- setdiff(packages, rownames(installed.packages()))) > 0) {
+  message("Installing missing package(s): ", paste(missing_pkgs, collapse = ", "))
+  install.packages(missing_pkgs)
+}
+
+### Call the libraries
+library("meta")
+library("mmeta")
+library("readxl")
+```
+
+
+#for suicide_attempts execute the following 7 lines don't execute lines for suicide below
+
+```{r suicideattempts, echo=F, warning=FALSE}
+suicide_attempt <-read_excel("antidepressants_suicideattempt.xls")
+
+y1<-suicide_attempt$ADsuicideattempts
+n1<-suicide_attempt$ADparticipants
+y2<-suicide_attempt$PLCsuicideattempts
+n2<-suicide_attempt$PLCparticipants
+y1<-as.numeric(y1)
+y2<-as.numeric(y2)
+```
+
+#for suicide execute the following 4 lines
+```{r suicide, echo=F, warning=FALSE}
+suicide <- read_excel("antidepressants_suicide.xls")
+
+y1<-suicide$ADsuicides
+n1<-suicide$ADparticipants
+y2<-suicide$PLCsuicides
+n2<-suicide$PLCparticipants
+```
+
+
+
+### Perform the analyses
+```{r, echo=T, warning=FALSE}
+# inverse-variance odds-ratio with 0.5 continuity correction
+
+OR.IV <- metabin(y1, n1, y2, n2, sm="OR", method = "Inverse", incr=0.5)
+print(summary(OR.IV), digits=2)
+
+# inverse-variance odds-ratio with “treatment-arm” continuity correction
+OR.IV2 <- metabin(y1, n1, y2, n2, sm="OR", method = "Inverse", incr="TACC")
+print(summary(OR.IV2), digits=2)
+
+# Peto odds-ratio fixed effects
+MH.Peto <- metabin(y1, n1, y2, n2, sm="OR", method = "Peto")
+print(summary(MH.Peto), digits=2)
+
+# Mantel-Haenszel odds-ratio with no continuity correction fixed effects 
+MH.OR <- metabin(y1, n1, y2, n2, sm="OR", MH.exact=TRUE)
+print(summary(MH.OR), digits=2)
+
+# Mantel-Haenszel odds-ratio with “treatment-arm” continuity correction for forest plot
+MH.OR1 <- metabin(y1, n1, y2, n2, sm="OR", MH.exact=F, incr="TACC")
+print(summary(MH.OR1), digits=2)
+
+# Mantel-Haenszel odds-ratio with 0.5 continuity correction not in table 
+MH.OR2 <- metabin(y1, n1, y2, n2, sm="OR", MH.exact=F, incr=0.5)
+print(summary(MH.OR2), digits=2)
+
+# Mantel-Haenszel risk-difference with no continuity correction
+MH.RD<- metabin(y1, n1, y2, n2, sm="RD", MH.exact=TRUE)
+print(summary(MH.RD), digits=5)
+
+# Beta-binomial with correlated responses
+B=data.frame(y1=y2,y2=y1,n1=n2,n2=n1)
+B$studynames=suicide$study
+
+Beta.Bin<-multipletables(data=B, measure="OR", model="Sarmanov", method="sampling", nsam=1000)
+summary(Beta.Bin)
+
+# Arcsine difference fixed effect model
+ASD <- metabin(y1, n1, y2, n2, sm="ASD")
+print(summary(ASD), digits=3)
+
+##plots
+
+```{r, echo=F, warning=FALSE}
+
+funnel(OR.IV)
+forest(OR.IV,  comb.random = F, text.random = NULL, text.random.w = NULL, label.right = "higher risk in antidepressant", label.left = "higher risk in placebo",
+       overall=T,squaresize = 0, studlab = B$studynames, overall.hetstat=F)
+
+
+```
+
+
+References:
+
+1. 	Efthimiou O. Practical guide to the meta-analysis of rare events. Evid Based Ment Health. 2018;21(2):72–6. 
+2. 	Bradburn MJ, Deeks JJ, Berlin JA, Localio AR. Much ado about nothing: A comparison of the performance of meta-analytical methods with rare events. Stat Med. 2007;26(1):53–77. 
+
+

@@ -1818,3 +1818,274 @@ criteria of suicidal patients in newer studies.
 
 Problem with PEY: if suicide attemts occur causally after treatment
 initiation than PEY will water down effect.
+
+\#\#\#for supplement \#\#\#Data is stored in table
+“antidepressants\_suicideattempt.xls” and
+“antidepressants\_suicide.xls”.
+
+\#R Code adopted from Efthimiou(1) :
+
+### Start by installing necessary libraries
+
+    ## Loading 'meta' package (version 4.9-5).
+    ## Type 'help(meta)' for a brief overview.
+
+    ## 
+    ## Attaching package: 'meta'
+
+    ## The following objects are masked from 'package:metafor':
+    ## 
+    ##     baujat, forest, funnel, funnel.default, labbe, radial,
+    ##     trimfill
+
+\#for suicide\_attempts execute the following 7 lines don’t execute
+lines for suicide below
+
+    ## New names:
+    ## * `` -> ...1
+
+\#for suicide execute the following 4 lines
+
+    ## New names:
+    ## * `` -> ...1
+
+### Perform the analyses
+
+``` r
+# inverse-variance odds-ratio with 0.5 continuity correction
+
+OR.IV <- metabin(y1, n1, y2, n2, sm="OR", method = "Inverse", incr=0.5)
+print(summary(OR.IV), digits=2)
+```
+
+    ## Number of studies combined: k = 8
+    ## 
+    ##                        OR       95%-CI    z p-value
+    ## Fixed effect model   1.09 [0.46; 2.58] 0.19  0.8456
+    ## Random effects model 1.09 [0.46; 2.58] 0.19  0.8456
+    ## 
+    ## Quantifying heterogeneity:
+    ## tau^2 = 0; H = 1.00 [1.00; 1.17]; I^2 = 0.0% [0.0%; 27.2%]
+    ## 
+    ## Test of heterogeneity:
+    ##     Q d.f. p-value
+    ##  3.12    7  0.8739
+    ## 
+    ## Details on meta-analytical method:
+    ## - Inverse variance method
+    ## - DerSimonian-Laird estimator for tau^2
+    ## - Continuity correction of 0.5 in studies with zero cell frequencies
+
+``` r
+# inverse-variance odds-ratio with “treatment-arm” continuity correction
+OR.IV2 <- metabin(y1, n1, y2, n2, sm="OR", method = "Inverse", incr="TACC")
+print(summary(OR.IV2), digits=2)
+```
+
+    ## Number of studies combined: k = 8
+    ## 
+    ##                        OR       95%-CI    z p-value
+    ## Fixed effect model   1.11 [0.42; 2.90] 0.20  0.8392
+    ## Random effects model 1.11 [0.42; 2.90] 0.20  0.8392
+    ## 
+    ## Quantifying heterogeneity:
+    ## tau^2 = 0; H = 1.00 [1.00; 1.32]; I^2 = 0.0% [0.0%; 42.8%]
+    ## 
+    ## Test of heterogeneity:
+    ##     Q d.f. p-value
+    ##  3.97    7  0.7835
+    ## 
+    ## Details on meta-analytical method:
+    ## - Inverse variance method
+    ## - DerSimonian-Laird estimator for tau^2
+    ## - Treatment arm continuity correction in studies with zero cell frequencies
+
+``` r
+# Peto odds-ratio fixed effects
+MH.Peto <- metabin(y1, n1, y2, n2, sm="OR", method = "Peto")
+print(summary(MH.Peto), digits=2)
+```
+
+    ## Number of studies combined: k = 8
+    ## 
+    ##                        OR       95%-CI    z p-value
+    ## Fixed effect model   1.74 [0.78; 3.90] 1.35  0.1760
+    ## Random effects model 1.74 [0.78; 3.90] 1.35  0.1760
+    ## 
+    ## Quantifying heterogeneity:
+    ## tau^2 = 0; H = 1.00 [1.00; 1.43]; I^2 = 0.0% [0.0%; 51.1%]
+    ## 
+    ## Test of heterogeneity:
+    ##     Q d.f. p-value
+    ##  4.64    7  0.7032
+    ## 
+    ## Details on meta-analytical method:
+    ## - Peto method
+    ## - DerSimonian-Laird estimator for tau^2
+
+``` r
+# Mantel-Haenszel odds-ratio with no continuity correction fixed effects 
+MH.OR <- metabin(y1, n1, y2, n2, sm="OR", MH.exact=TRUE)
+print(summary(MH.OR), digits=2)
+```
+
+    ## Number of studies combined: k = 8
+    ## 
+    ##                        OR       95%-CI    z p-value
+    ## Fixed effect model   1.98 [0.71; 5.50] 1.31  0.1901
+    ## Random effects model 1.09 [0.46; 2.58] 0.19  0.8456
+    ## 
+    ## Quantifying heterogeneity:
+    ## tau^2 = 0; H = 1.00 [1.00; 1.48]; I^2 = 0.0% [0.0%; 54.3%]
+    ## 
+    ## Test of heterogeneity:
+    ##     Q d.f. p-value
+    ##  4.96    7  0.6646
+    ## 
+    ## Details on meta-analytical method:
+    ## - Mantel-Haenszel method (without continuity correction)
+    ## - DerSimonian-Laird estimator for tau^2
+    ## - Continuity correction of 0.5 in studies with zero cell frequencies
+
+``` r
+# Mantel-Haenszel odds-ratio with “treatment-arm” continuity correction for forest plot
+MH.OR1 <- metabin(y1, n1, y2, n2, sm="OR", MH.exact=F, incr="TACC")
+print(summary(MH.OR1), digits=2)
+```
+
+    ## Number of studies combined: k = 8
+    ## 
+    ##                        OR       95%-CI    z p-value
+    ## Fixed effect model   1.78 [0.71; 4.42] 1.23  0.2169
+    ## Random effects model 1.11 [0.42; 2.90] 0.20  0.8392
+    ## 
+    ## Quantifying heterogeneity:
+    ## tau^2 = 0; H = 1.00 [1.00; 1.47]; I^2 = 0.0% [0.0%; 53.6%]
+    ## 
+    ## Test of heterogeneity:
+    ##     Q d.f. p-value
+    ##  4.90    7  0.6727
+    ## 
+    ## Details on meta-analytical method:
+    ## - Mantel-Haenszel method
+    ## - DerSimonian-Laird estimator for tau^2
+    ## - Treatment arm continuity correction in studies with zero cell frequencies
+
+``` r
+# Mantel-Haenszel odds-ratio with 0.5 continuity correction not in table 
+MH.OR2 <- metabin(y1, n1, y2, n2, sm="OR", MH.exact=F, incr=0.5)
+print(summary(MH.OR2), digits=2)
+```
+
+    ## Number of studies combined: k = 8
+    ## 
+    ##                        OR       95%-CI    z p-value
+    ## Fixed effect model   1.37 [0.60; 3.15] 0.75  0.4549
+    ## Random effects model 1.09 [0.46; 2.58] 0.19  0.8456
+    ## 
+    ## Quantifying heterogeneity:
+    ## tau^2 = 0; H = 1.00 [1.00; 1.22]; I^2 = 0.0% [0.0%; 33.1%]
+    ## 
+    ## Test of heterogeneity:
+    ##     Q d.f. p-value
+    ##  3.39    7  0.8463
+    ## 
+    ## Details on meta-analytical method:
+    ## - Mantel-Haenszel method
+    ## - DerSimonian-Laird estimator for tau^2
+    ## - Continuity correction of 0.5 in studies with zero cell frequencies
+
+``` r
+# Mantel-Haenszel risk-difference with no continuity correction
+MH.RD<- metabin(y1, n1, y2, n2, sm="RD", MH.exact=TRUE)
+print(summary(MH.RD), digits=5)
+```
+
+    ## Number of studies combined: k = 14
+    ## 
+    ##                           RD              95%-CI    z p-value
+    ## Fixed effect model   0.00045 [-0.00009; 0.00098] 1.63  0.1029
+    ## Random effects model 0.00030 [-0.00025; 0.00085] 1.06  0.2887
+    ## 
+    ## Quantifying heterogeneity:
+    ## tau^2 = 0; H = 1.00 [1.00; 1.22]; I^2 = 0.0% [0.0%; 32.8%]
+    ## 
+    ## Test of heterogeneity:
+    ##     Q d.f. p-value
+    ##  8.70   13  0.7952
+    ## 
+    ## Details on meta-analytical method:
+    ## - Mantel-Haenszel method (without continuity correction)
+    ## - DerSimonian-Laird estimator for tau^2
+    ## - Continuity correction of 0.5 in studies with zero cell frequencies
+
+``` r
+# Beta-binomial with correlated responses
+B=data.frame(y1=y2,y2=y1,n1=n2,n2=n1)
+B$studynames=suicide$study
+
+Beta.Bin<-multipletables(data=B, measure="OR", model="Sarmanov", method="sampling", nsam=1000)
+summary(Beta.Bin)
+```
+
+    ## Model: Sarmanov Beta-Binomial Model
+    ## Overall Odds ratio
+    ## Estimate: 2.271
+    ## 95% CI:[1.083,4.759]
+    ## 
+    ## Maximum likelihood estimates of hyperparameters:
+    ## a1 =0.393, b1 =840.495, a2 =0.856, b2 =806.095, rho =0
+    ## Likelihood ratio test for within-group correlation (H0: rho=0):
+    ## chi2: 0.001; p-value: 0.97
+    ## Study-SpecifcOdds ratio:
+    ##                         Mean Lower Bound Upper Bound
+    ## Sertraline (1991)      1.000       1.000       1.000
+    ## Paroxetine (1992)      1.000       1.000       1.000
+    ## Venlafaxine (1993)     1.000       1.000       1.000
+    ## Nefazodone (1994)      1.000       1.000       1.000
+    ## Mirtazapine (1996)     1.000       1.000       1.000
+    ## Venlafaxine ER (1997)  1.000       1.000       1.000
+    ## Citalopram (1998)      1.000       1.000       1.000
+    ## Escitalopram (2002)    1.000       1.000       1.000
+    ## Duloxetine (2002)      1.000       1.000       1.000
+    ## Desvenlafaxine (2008)  1.000       1.000       1.000
+    ## Trazodone ER (2010)    1.000       1.000       1.000
+    ## Vilazodone (2011)      1.000       1.000       1.000
+    ## Levomilnacipran (2013) 1.000       1.000       1.000
+    ## Vortioxetine (2013)    1.000       1.000       1.000
+    ## Overall                2.271       1.083       4.759
+
+``` r
+# Arcsine difference fixed effect model
+ASD <- metabin(y1, n1, y2, n2, sm="ASD")
+print(summary(ASD), digits=3)
+```
+
+    ## Number of studies combined: k = 14
+    ## 
+    ##                        ASD         95%-CI    z p-value
+    ## Fixed effect model   0.012 [0.000; 0.023] 2.03  0.0422
+    ## Random effects model 0.012 [0.000; 0.024] 1.98  0.0479
+    ## 
+    ## Quantifying heterogeneity:
+    ## tau^2 < 0.0001; H = 1.03 [1.00; 1.53]; I^2 = 5.2% [0.0%; 57.4%]
+    ## 
+    ## Test of heterogeneity:
+    ##      Q d.f. p-value
+    ##  13.71   13  0.3948
+    ## 
+    ## Details on meta-analytical method:
+    ## - Inverse variance method
+    ## - DerSimonian-Laird estimator for tau^2
+
+``` r
+##plots
+```
+
+![](antidepressants_markd_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->![](antidepressants_markd_files/figure-gfm/unnamed-chunk-4-2.png)<!-- -->
+
+References: 1. Efthimiou O. Practical guide to the meta-analysis of rare
+events. Evid Based Ment Health. 2018;21(2):72–6. 2. Bradburn MJ, Deeks
+JJ, Berlin JA, Localio AR. Much ado about nothing: A comparison of the
+performance of meta-analytical methods with rare events. Stat Med.
+2007;26(1):53–77.
