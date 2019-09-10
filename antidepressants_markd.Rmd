@@ -228,9 +228,9 @@ Kahn et al. specifically report a reduction of suicide and suicide attempts in n
 
 Problem with PEY: if suicide attemts occur causally after treatment initiation than PEY will water down effect. 
 
-## for supplement
+# for supplement
 
-### R Code adopted from Efthimiou(1) :
+### R Code adopted from Efthimiou(1)
 
 Data is stored in table "antidepressants_suicideattempt.xls" and "antidepressants_suicide.xls".
 Start by installing necessary libraries
@@ -247,7 +247,7 @@ library("mmeta")
 library("readxl")
 ```
 
-# for suicide
+## for suicide
 
 ```{r suicide, include=F, echo=F, warning=FALSE}
 suicide <- read_excel("antidepressants_suicide.xls")
@@ -315,7 +315,7 @@ forest(OR.IV,  comb.random = F, text.random = NULL, text.random.w = NULL, label.
 ```
 
 
-# for suicide_attempts:
+## for suicide_attempts:
 
 ```{r suicideattempts, include=F, echo=F, warning=FALSE}
 library(readxl)

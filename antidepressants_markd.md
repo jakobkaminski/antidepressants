@@ -1819,9 +1819,9 @@ criteria of suicidal patients in newer studies.
 Problem with PEY: if suicide attemts occur causally after treatment
 initiation than PEY will water down effect.
 
-## for supplement
+# for supplement
 
-### R Code adopted from Efthimiou(1) :
+### R Code adopted from Efthimiou(1)
 
 Data is stored in table “antidepressants\_suicideattempt.xls” and
 “antidepressants\_suicide.xls”. Start by installing necessary
@@ -1838,7 +1838,7 @@ libraries
     ##     baujat, forest, funnel, funnel.default, labbe, radial,
     ##     trimfill
 
-# for suicide
+## for suicide
 
 ### Perform the analyses
 
@@ -2073,7 +2073,7 @@ print(summary(ASD), digits=3)
 
 ![](antidepressants_markd_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->![](antidepressants_markd_files/figure-gfm/unnamed-chunk-4-2.png)<!-- -->
 
-# for suicide\_attempts:
+## for suicide\_attempts:
 
 ### Perform the analyses
 
